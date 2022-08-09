@@ -74,19 +74,35 @@ function drawKittens() {
     let kittenChoiceName = "cat_" + kittens[i].imgNum + "_" + String(kittens[i].imgType);
     console.log(kittens[i].id)
     let idNum = i;
-    kittensTemplate += `
-    <div class="card kitten"> 
-      <img src="${kittenChoice}" height="200" alt="${kittenChoiceName}">
-      <h3 class="font-spectral">${kittens[i].name}</h3>
-      <p>Mood: ${kittens[i].mood}</p>
-      <p>Affection: ${kittens[i].affection}</p>
-      <p>ID: ${kittens[i].id}</p>
-      <div class="d-flex space-between">
-        <button onclick="pet(${idNum})">Pet</button>
-        <button onclick="catnip(${idNum})">Catnip</button>
+    if (kittens[i].affection >= 1 && kittens[i].affection <= 9){
+      kittensTemplate += `
+      <div class="card kitten"> 
+        <img src="${kittenChoice}" height="200" alt="${kittenChoiceName}">
+        <h3 class="font-spectral">${kittens[i].name}</h3>
+        <p>Mood: ${kittens[i].mood}</p>
+        <p>Affection: ${kittens[i].affection}</p>
+        <p>ID: ${kittens[i].id}</p>
+        <div class="d-flex space-between">
+          <button onclick="pet(${idNum})">Pet</button>
+          <button onclick="catnip(${idNum})">Catnip</button>
+        </div>
       </div>
-    </div>
-    `
+      `
+    } else if (kittens[i].affection == 0) {
+      kittensTemplate += `
+      <div class="card kitten"> 
+        <img src="cat_gone.jpg" height="200" alt="cat_gone">
+        <h3 class="font-spectral">${kittens[i].name}</h3>
+        <p>Mood: ${kittens[i].mood}</p>
+        <p>Affection: ${kittens[i].affection}</p>
+        <p>ID: ${kittens[i].id}</p>
+        <div class="d-flex space-between">
+          <button onclick="pet(${idNum})">Pet</button>
+          <button onclick="catnip(${idNum})">Catnip</button>
+        </div>
+      </div>
+      `
+    }
   }
   //)
   console.log(kittensTemplate)
@@ -131,7 +147,7 @@ function pet(currentKittenId) {
       currentKitten.affection++
     }
   } else {
-    if (currentKitten.affection > 1 && currentKitten.affection <= 9) {
+    if (currentKitten.affection >= 1 && currentKitten.affection <= 9) {
       currentKitten.affection--
     }
   }
@@ -149,10 +165,12 @@ function catnip(currentKittenId) {
   currentKittenId = kittens[currentKittenId].id
   console.log(currentKittenId)
   currentKitten = findKittenById(currentKittenId)
-  currentKitten.mood = "neutral"
-  currentKitten.imgType = "neutral"
-  drawKittens()
-  currentKitten.affection = 5
+  if (currentKitten.affection >= 1) {
+    currentKitten.mood = "neutral"
+    currentKitten.imgType = "neutral"
+    drawKittens()
+    currentKitten.affection = 5
+  }
 }
 
 /**
@@ -160,7 +178,9 @@ function catnip(currentKittenId) {
  * @param {Kitten} kitten 
  */
 function setKittenMood(kitten) {
-  if (currentKitten.affection >= 1 && currentKitten.affection <= 3) {
+  if (currentKitten.affection == 0) {
+    currentKitten.mood = "gone"
+  } else if (currentKitten.affection >= 1 && currentKitten.affection <= 3) {
     currentKitten.mood = "angry"
   } else if (currentKitten.affection >= 4 && currentKitten.affection <= 6) {
     currentKitten.mood = "neutral"
